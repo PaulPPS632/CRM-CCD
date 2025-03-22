@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: pauld
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: databasepg
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pauld -d databasepg"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+
+  maestro:
+    build:
+      context: ./maestro
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./MAESTRO/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./MAESTRO:/app
+    command: ["npm", "run", "dev"]
+
+  storage:
+    build:
+      context: ./Cursos
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./CURSOS/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./CURSOS:/app
+    command: ["npm", "run", "dev"]
+
+  usuarios:
+    build:
+      context: ./Usuarios
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./USUARIOS/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./USUARIOS:/app
+    command: ["npm", "run", "dev"]
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./gateway/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./gateway:/app
+    command: ["npm", "run", "dev"]
+
+volumes:
+  postgres_data:
