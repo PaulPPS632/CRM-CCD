@@ -1,37 +1,45 @@
 import PaginaRepository from "../domain/PaginaRepository"
 import Pagina from "../domain/Pagina"
-import { PaginaModel } from "./Pagina.model" // Ya no necesitamos PaginaModelFactory
-import { Sequelize } from "sequelize-typescript"
-
+import { PaginaModel } from "./Pagina.model";
 export default class SequelizePaginaRepository implements PaginaRepository {
-    private db: Sequelize
-
-    constructor(db: Sequelize) {
-        this.db = db
+    
+    async create(pagina: Pagina): Promise<void> {
+        await PaginaModel.create({
+            name: pagina.name,
+            RedPaginaId: pagina.RedPaginaId
+        });
+        return Promise.resolve();
     }
-
-    async save(pagina: Pagina): Promise<void> {
-        const { IdPagina, Nombre, RedPaginaId } = pagina
-        await PaginaModel.create({ IdPagina, Nombre, RedPaginaId }) // Llamado directo
-    }
-
     async update(pagina: Pagina): Promise<void> {
-        const { IdPagina, Nombre, RedPaginaId } = pagina
-        await PaginaModel.update({ Nombre, RedPaginaId }, { where: { IdPagina } })
+        await PaginaModel.update({
+            name: pagina.name,
+            RedPaginaId: pagina.RedPaginaId
+        }, {
+            where: {
+                id: pagina.id
+            }
+        });
+        return Promise.resolve();
     }
-
-    async delete(pagina: Pagina): Promise<void> {
-        const { IdPagina } = pagina
-        await PaginaModel.destroy({ where: { IdPagina } })
+    async delete(id: number): Promise<void> {
+        await PaginaModel.destroy({
+            where: {
+                id
+            }
+        });
+        return Promise.resolve();
     }
-
-    async getById(IdPagina: number): Promise<Pagina> {
-        const pagina = await PaginaModel.findByPk(IdPagina)
-        if (!pagina) throw new Error('Pagina not found')
-        return pagina
+    async findById(id: number): Promise<Pagina> {
+        const pagina = await PaginaModel.findByPk(id);
+        if (!pagina) {
+            throw new Error("Pagina no encontrada");
+        }
+        const paginaFound = new Pagina(pagina.id, pagina.name, pagina.RedPaginaId);
+        return Promise.resolve(paginaFound);
     }
-
-    async getAll(): Promise<Pagina[]> {
-        return await PaginaModel.findAll()
+    async findAll(): Promise<Pagina[]> {
+        const paginas = await PaginaModel.findAll();
+        const mappedpaginas = paginas.map((pagina) => new Pagina(pagina.id, pagina.name, pagina.RedPaginaId));
+        return Promise.resolve(mappedpaginas);
     }
 }

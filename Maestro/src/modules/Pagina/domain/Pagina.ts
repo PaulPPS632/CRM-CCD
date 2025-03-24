@@ -1,7 +1,7 @@
 export default class Pagina {
     constructor(
-        public IdPagina: number,
-        public Nombre: string,
+        public id: number,
+        public name: string,
         public RedPaginaId: number
     ) {}
 }

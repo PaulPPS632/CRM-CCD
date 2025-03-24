@@ -1,8 +1,8 @@
-export default class Formulario {
+export default class Campana {
     constructor(
-        public IdCampana: number,
-        public Nombre: string,
-        public RedCampanaId: number,
-        public Pagina_Id: number
+        public id: number,
+        public name: string,
+        public RedCampanaId: string,
+        public paginaId: number
     ) {}
 }

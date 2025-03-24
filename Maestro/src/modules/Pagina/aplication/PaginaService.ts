@@ -1,33 +1,51 @@
+import Pagina from "@Pagina/domain/Pagina";
 import PaginaRepository from "../domain/PaginaRepository";
-import Pagina from "../domain/Pagina";
+import SequelizePaginaRepository from "@Pagina/infraestructure/SequelizePaginaRepository";
 
 export default class PaginaService {
-    private paginaRepository: PaginaRepository;
-
-    constructor(paginaRepository: PaginaRepository) {
-        this.paginaRepository = paginaRepository;
+    constructor(private paginaRepository: PaginaRepository) {
+        this.paginaRepository = new SequelizePaginaRepository();
     }
-
-    async createPagina(nombre: string, redPaginaId: number): Promise<void> {
-        const nuevaPagina = new Pagina(0, nombre, redPaginaId); // IdPagina se genera automáticamente
-        await this.paginaRepository.save(nuevaPagina);
+    
+    async create(pagina: Pagina): Promise<void>{
+        try {
+            await this.paginaRepository.create(pagina);
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
+        
     }
-
-    async getPaginaById(id: number): Promise<Pagina> {
-        return await this.paginaRepository.getById(id);
+    async update(pagina: Pagina): Promise<void>{
+        try {
+            await this.paginaRepository.update(pagina);
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
-
-    async getAllPaginas(): Promise<Pagina[]> {
-        return await this.paginaRepository.getAll();
+    async delete(id: number): Promise<void>{
+        try {
+            await this.paginaRepository.delete(id);
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
-
-    async updatePagina(id: number, nombre: string, redPaginaId: number): Promise<void> {
-        const pagina = new Pagina(id, nombre, redPaginaId);
-        await this.paginaRepository.update(pagina);
+    async findById(id: number): Promise<Pagina>{
+        try {
+            const pagina = await this.paginaRepository.findById(id);
+            return Promise.resolve(pagina);
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
-
-    async deletePagina(id: number): Promise<void> {
-        const pagina = new Pagina(id, "", 0);
-        await this.paginaRepository.delete(pagina);
+    async findAll(): Promise<Pagina[]>{
+        try {
+            const paginas = await this.paginaRepository.findAll();
+            return Promise.resolve(paginas);
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 }

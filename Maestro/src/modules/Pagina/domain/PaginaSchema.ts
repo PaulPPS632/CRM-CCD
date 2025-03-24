@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const PaginaSchema = z.object({
-  IdPagina: z.number().int().positive(),
-  Nombre: z.string(),
+  id: z.number().int().positive(),
+  name: z.string(),
   RedPaginaId: z.number(),
 });
 

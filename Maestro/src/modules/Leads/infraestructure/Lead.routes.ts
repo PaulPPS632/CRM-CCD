@@ -1,10 +1,10 @@
 import { Router } from "express";
 import LeadController from "@Leads/infraestructure/Lead.controller";
 
-const router = Router();
+const LeadRouter = Router();
 
-// router.get("/", LeadController.getLeads);
-router.post("/", LeadController.createLead);
+LeadRouter.get("/", LeadController.findAll);
+LeadRouter.post("/", LeadController.create);
 // router.get("/:id", getLeadById);
 
-export default router;
+export default LeadRouter;

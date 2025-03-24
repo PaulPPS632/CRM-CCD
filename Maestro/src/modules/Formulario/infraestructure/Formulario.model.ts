@@ -1,22 +1,22 @@
-import { Table, Column, Model, PrimaryKey, AutoIncrement, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { CampanaModel } from "@Campana/infraestructure/Campana.model";
+import { Table, Column, Model, DataType, Unique, ForeignKey, BelongsTo } from "sequelize-typescript";
 
-@Table({ tableName: 'Formulario' })
+@Table({ tableName: "Formulario" })
 export class FormularioModel extends Model {
-    @PrimaryKey
-    @AutoIncrement
-    @Column(DataType.INTEGER)
-    IdFormulario!: number;
+  @Column(DataType.STRING)
+  name!: string;
 
-    // RedFormularioId
-    // Bot_Id solo number
+  @Unique
+  @Column(DataType.STRING)
+  RedFormularioId!: string;
 
-    @Column(DataType.INTEGER)
-    Curso_Id!: number;
+  @Column(DataType.INTEGER)
+  cursoId!: number;
 
-    @Column(DataType.STRING)
-    NombreFormulario!: string;
+  @ForeignKey(() => CampanaModel)
+  @Column(DataType.INTEGER)
+  campanaId!: number;
 
-    @BelongsTo(() => CursoModel)
-    Curso!: CursoModel;
-
+  @BelongsTo(() => CampanaModel)
+  campana!: CampanaModel;
 }

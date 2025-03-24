@@ -12,12 +12,12 @@ class Database {
 
     init() {
         try {
-            const name = process.env.DB_NAME || "databasepg";
-            const user = process.env.DB_USER || "pauld";
-            const password = process.env.DB_PASSWORD || "123456";
+            const name = process.env.DB_NAME || "mastercrm";
+            const user = process.env.DB_USER || "paul";
+            const password = process.env.DB_PASSWORD || "paulp";
             const dialect = (process.env.DB_DIALECT as Dialect) || 'mysql'
             const host = process.env.DB_HOST || "localhost";
-            const port = parseInt(process.env.DB_PORT || "5432"); 
+            const port = parseInt(process.env.DB_PORT || "3306"); 
             
             console.log("Detalles de la conexión:", { database: name, user, host, dialect, port });
 

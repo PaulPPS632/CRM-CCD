@@ -4,22 +4,17 @@ import { PaginaModel } from '../../Pagina/infraestructure/Pagina.model';
 
 @Table({ tableName: 'Campana' })
 export class CampanaModel extends Model {
-    @PrimaryKey
-    @AutoIncrement
-    @Column(DataType.INTEGER)
-    IdCampana!: number;
-
     @Column(DataType.STRING)
-    Nombre!: string;
+    name!: string;
 
     @Column(DataType.INTEGER)
     RedCampanaId!: string;
 
     @ForeignKey(() => PaginaModel)
     @Column(DataType.INTEGER)
-    Pagina_Id!: number;
+    paginaId!: number;
 
     @BelongsTo(() => PaginaModel)
-    Pagina!: PaginaModel;
+    pagina!: PaginaModel;
     
 }

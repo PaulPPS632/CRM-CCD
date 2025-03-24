@@ -1,30 +1,53 @@
 import CampanaRepository from "../domain/CampanaRepository";
 import Campana from "../domain/Campana";
+import SequelizeCampanaRepository from "@Campana/infraestructure/SequelizeCampanaRepository";
 
 export default class CampanaService {
-    private campanaRepository: CampanaRepository;
-    constructor(campanaRepository: CampanaRepository) {
-        this.campanaRepository = campanaRepository;
+    constructor(private campanaRepository: CampanaRepository) {
+        this.campanaRepository = new SequelizeCampanaRepository();
     }
 
-    async createCampana(nombre: string, recCampanaId: number, paginaId: number): Promise<void> {
-        const nuevaCampana = new Campana(0, nombre, recCampanaId, paginaId);
-        await this.campanaRepository.save(nuevaCampana);
+    async create(campana: Campana): Promise<void> {
+        try {
+            await this.campanaRepository.create(campana);
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 
-    async getAllCampanas(): Promise<Campana[]> {
-        return await this.campanaRepository.findAll();
+    async update(campana: Campana): Promise<void> {
+        try {
+            await this.campanaRepository.update(campana);
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 
-    async getCampanaById(id: number): Promise<Campana | null> {
-        return await this.campanaRepository.findById(id);
+    async delete(id: number): Promise<void> {
+        try {
+            await this.campanaRepository.delete(id);
+            return Promise.resolve();
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 
-    async deleteCampanaById(id: number): Promise<void> {
-        return await this.campanaRepository.deleteById(id);
+    async findById (id: number): Promise<Campana>{
+        try {
+            const campana = await this.campanaRepository.findById(id);
+            return Promise.resolve(campana);
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
-
-    async updateCampana(campana: Campana): Promise<void> {
-        return await this.campanaRepository.update(campana);
+    async findAll(): Promise<Campana[]> {
+        try {
+            const campanas = await this.campanaRepository.findAll();
+            return Promise.resolve(campanas);
+        } catch (error) {
+            return Promise.reject(error);
+        }
     }
 }

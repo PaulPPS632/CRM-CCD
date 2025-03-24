@@ -1,5 +1,9 @@
 import express, { Application } from "express";
 import cors from "cors";
+import CampanaRouter from "@Campana/infraestructure/Campana.routes";
+import LeadRouter from "@Leads/infraestructure/Lead.routes";
+import FormularioRouter from "@Formulario/infraestructure/Formulario.routes";
+import PaginaRouter from "@Pagina/infraestructure/Pagina.routes";
 
 // import UsuarioRoutes from "@Usuario/infrastructure/UsuarioRoutes";
 
@@ -19,6 +23,10 @@ class App {
 
     private routes(): void {
         // this.server.use("/api/usuarios", UsuarioRoutes);
+        this.server.use("/api/campana", CampanaRouter);
+        this.server.use("/api/leads", LeadRouter);
+        this.server.use("/api/formulario", FormularioRouter);
+        this.server.use("/api/pagina", PaginaRouter);
     }
 
     public getServer(): Application {

@@ -1,60 +1,57 @@
 import { Request, Response } from "express";
 import PaginaService from "../aplication/PaginaService";
+import PaginaRepository from "@Pagina/domain/PaginaRepository";
+import SequelizePaginaRepository from "./SequelizePaginaRepository";
+import { PaginaSchema } from "@Pagina/domain/PaginaSchema";
 
+const paginaRepository: PaginaRepository = new SequelizePaginaRepository();
+const paginaService = new PaginaService(paginaRepository);
 export default class PaginaController {
-    private paginaService: PaginaService;
 
-    constructor(paginaService: PaginaService) {
-        this.paginaService = paginaService;
-    }
-
-    async create(req: Request, res: Response) {
+    static async create(req: Request, res: Response): Promise<void> {
         try {
-            const { nombre, redPaginaId } = req.body;
-            await this.paginaService.createPagina(nombre, redPaginaId);
+            const validatedData = PaginaSchema.parse(req.body);
+            await paginaService.create(validatedData);
             res.status(201).json({ message: "Página creada exitosamente" });
         } catch (error) {
-            res.status(500).json({ error: "No se creo la Página" });
+            res.status(500).json({ error: "Error al crear la página" });
         }
     }
-
-    async getAll(req: Request, res: Response) {
+    static async update(req: Request, res: Response): Promise<void> {
         try {
-            const paginas = await this.paginaService.getAllPaginas();
+            const validatedData = PaginaSchema.parse(req.body);
+            await paginaService.update(validatedData);
+            res.status(200).json({ message: "Pagina actualizada"});
+        } catch (error) {
+            res.status(500).json({ error: error });
+        }
+    }
+    static async delete(req: Request, res: Response): Promise<void> {
+        try {
+            const { id } = req.params;
+            const validatedId = parseInt(id, 10);
+            await paginaService.delete(validatedId);
+            res.status(200).json({ message: "Campaña eliminada" });
+        } catch (error) {
+            res.status(500).json({ error: error });
+        }
+    }
+    static async findAll(req: Request, res: Response): Promise<void> {
+        try {
+            const paginas = await paginaService.findAll();
             res.status(200).json(paginas);
         } catch (error) {
             res.status(500).json({ error: "No se mostraron" });
         }
     }
-
-    async getById(req: Request, res: Response) {
+    static async findById(req: Request, res: Response): Promise<void> {
         try {
-            const id = parseInt(req.params.id);
-            const pagina = await this.paginaService.getPaginaById(id);
-            res.status(200).json(pagina);
+            const { id } = req.params;
+            const validatedId = parseInt(id, 10);
+            const pagina = await paginaService.findById(validatedId);
+            res.json(pagina);
         } catch (error) {
-            res.status(404).json({ error: "Página no encontrada" });
-        }
-    }
-
-    async update(req: Request, res: Response) {
-        try {
-            const id = parseInt(req.params.id);
-            const { nombre, redPaginaId } = req.body;
-            await this.paginaService.updatePagina(id, nombre, redPaginaId);
-            res.status(200).json({ message: "Página actualizada" });
-        } catch (error) {
-            res.status(500).json({ error: error });
-        }
-    }
-
-    async delete(req: Request, res: Response) {
-        try {
-            const id = parseInt(req.params.id);
-            await this.paginaService.deletePagina(id);
-            res.status(200).json({ message: "Página eliminada" });
-        } catch (error) {
-            res.status(500).json({ error: error });
+            res.status(404).json({ error: "Campaña no encontrada" });
         }
     }
 }

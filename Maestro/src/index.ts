@@ -1,8 +1,7 @@
-import { createServer } from "http";
 import { config } from "dotenv";
 config();
+import { createServer } from "http";
 import app from "./app";
-import express from "express";
 import database from "./shared/config/database";
 import { seedData } from "./shared/config/seed";
 async function main(): Promise<void> {
